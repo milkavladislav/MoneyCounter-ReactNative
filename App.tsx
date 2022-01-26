@@ -2,7 +2,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {BottomNavigation, DefaultTheme,  Provider as PaperProvider, Button } from "react-native-paper";
 import { useState } from "react";
-import { Transactions } from "./components/Transactions";
+import { Transactions } from "./components/Transaction/Transactions";
+import { addAccount, deleteAllAccounts, getAllAccounts, updateAccount } from "./storeFunctions/accounts";
 
 const theme = {
   ...DefaultTheme,
@@ -78,6 +79,18 @@ export default () => {
       </TouchableOpacity>
       <Button icon="content-save" dark mode="contained" onPress={saveData}>
         Press me
+      </Button>
+      <Button icon="content-save" dark mode="contained" onPress={() => addAccount({name: 'Caq', amount: 29})}>
+        Add account
+      </Button>
+      <Button icon="content-save" dark mode="contained" onPress={() => getAllAccounts()}>
+        Show all accounts
+      </Button>
+      <Button icon="content-save" dark mode="contained" onPress={() => deleteAllAccounts()}>
+        Delete all accounts
+      </Button>
+      <Button icon="content-save" dark mode="contained" onPress={() => updateAccount({name: 'Caw', amount: 29}, {name: 'Caw', amount: 100})}>
+        Update accounts
       </Button>
     </View>);
     
