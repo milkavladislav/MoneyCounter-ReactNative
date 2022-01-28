@@ -4,6 +4,8 @@ import {BottomNavigation, DefaultTheme,  Provider as PaperProvider, Button } fro
 import { useState } from "react";
 import { Transactions } from "./components/Transaction/Transactions";
 import { addAccount, deleteAllAccounts, getAllAccounts, updateAccount } from "./storeFunctions/accounts";
+import { deleteAllTransactions, getAllTransactions } from "./storeFunctions/transactions";
+import { Category } from "./components/Category/Category";
 
 const theme = {
   ...DefaultTheme,
@@ -20,28 +22,10 @@ export default () => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'statistic', title: 'Statistic', icon: 'chart-histogram', color: '#f64f59'},
+    { key: 'category', title: 'Category', icon: 'vector-triangle', color: '#f64f59'},
     { key: 'transactions', title: 'Transactions', icon: 'wallet', color: '#c471ed' },
     { key: 'account', title: 'Account', icon: 'account-outline', color: '#6dd5ed' },
   ]);
-
-  const saveData = () => {
-    storeData({
-      user: {
-        name: "Vlad",
-        surname: "Milka",
-      },
-    });
-  };
-
-  const storeData = async (value: any) => {
-    try {
-      const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem("@storage_Ke", jsonValue);
-      alert('data was saved')
-    } catch (e) {
-      alert("data don`t store(((");
-    }
-  };
 
   const getData = async () => {
     try {
@@ -77,10 +61,7 @@ export default () => {
       <TouchableOpacity onPress={getAllKeys}>
         <Text>GetAllKeys</Text>
       </TouchableOpacity>
-      <Button icon="content-save" dark mode="contained" onPress={saveData}>
-        Press me
-      </Button>
-      <Button icon="content-save" dark mode="contained" onPress={() => addAccount({name: 'Caq', amount: 29})}>
+      <Button icon="content-save" dark mode="contained" onPress={() => addAccount({name: 'Caq', amount: 0})}>
         Add account
       </Button>
       <Button icon="content-save" dark mode="contained" onPress={() => getAllAccounts()}>
@@ -89,14 +70,33 @@ export default () => {
       <Button icon="content-save" dark mode="contained" onPress={() => deleteAllAccounts()}>
         Delete all accounts
       </Button>
-      <Button icon="content-save" dark mode="contained" onPress={() => updateAccount({name: 'Caw', amount: 29}, {name: 'Caw', amount: 100})}>
+      {/* <Button icon="content-save" dark mode="contained" onPress={() => updateAccount({name: 'Caw', amount: 29}, {name: 'Caw', amount: 100})}>
         Update accounts
+      </Button> */}
+      <Button icon="content-save" dark mode="contained" onPress={() => addAccount({name: 'Caq', amount: 29})}>
+        Add category
+      </Button>
+      <Button icon="content-save" dark mode="contained" onPress={() => getAllAccounts()}>
+        Show all categories
+      </Button>
+      <Button icon="content-save" dark mode="contained" onPress={() => deleteAllAccounts()}>
+        Delete all categories
+      </Button>
+      {/* <Button icon="content-save" dark mode="contained" onPress={() => updateAccount({name: 'Caw', amount: 29}, {name: 'Caw', amount: 100})}>
+        Update category
+      </Button> */}
+      <Button icon="content-save" dark mode="contained" onPress={() => getAllTransactions()}>
+        Show all transactions
+      </Button>
+      <Button icon="content-save" dark mode="contained" onPress={() => deleteAllTransactions()}>
+        Delete all transactions
       </Button>
     </View>);
     
 
     const renderScene = BottomNavigation.SceneMap({
       statistic: MusicRoute,
+      category: Category,
       transactions: Transactions,
       account: RecentsRoute,
     });

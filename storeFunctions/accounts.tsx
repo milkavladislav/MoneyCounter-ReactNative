@@ -6,10 +6,10 @@ const accountsKey = "@accounts";
 const addAccount = async (newAccount: IAccount) => {
   try {
     const value = await getAllAccounts();
-    console.log(value)
     if(value.filter((account: IAccount) => account.name === newAccount.name).length !== 0) {
         throw new Error("Account already exist");
     }
+    newAccount.id = new Date().getTime();
     value.push(newAccount)
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(accountsKey, jsonValue);
@@ -18,7 +18,7 @@ const addAccount = async (newAccount: IAccount) => {
   }
 };
 
-const getAllAccounts = async () => {
+const getAllAccounts = async (): Promise<IAccount[]> => {
   try {
     const jsonValue = await AsyncStorage.getItem(accountsKey);
     console.log(jsonValue)
@@ -26,6 +26,7 @@ const getAllAccounts = async () => {
   } catch (e) {
     alert(e);
   }
+  return [];
 };
 
 const deleteAllAccounts = async () => {
@@ -36,17 +37,34 @@ const deleteAllAccounts = async () => {
   }
 };
 
-const updateAccount = async (oldAccount: IAccount, newAccount: IAccount) => {
+const updateAccount = async (oldAccountId: number, newAccountName: string) => {
   try {
     const value = await getAllAccounts();
-    const updateAccounts = value.map((account: IAccount) =>
-      account.name === oldAccount.name ? newAccount : account
-    );
-    const jsonValue = JSON.stringify(updateAccounts);
+    value.map((account: IAccount) => {
+      if(account.id === oldAccountId){
+        account.name = newAccountName;
+      }
+    });
+    const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(accountsKey, jsonValue);
   } catch (e) {
     alert(e);
   }
 };
 
-export { addAccount, getAllAccounts, deleteAllAccounts, updateAccount };
+const updateAccountAmount = async (accountId: number, transactionAmount: number) => {
+  try {
+    const value = await getAllAccounts();
+    value.map((account: IAccount) => {
+      if(account.id === accountId){
+        account.amount += transactionAmount;
+      }
+    });
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem(accountsKey, jsonValue);
+  } catch (e) {
+    alert(e);
+  }
+};
+
+export { addAccount, getAllAccounts, deleteAllAccounts, updateAccount, updateAccountAmount };
