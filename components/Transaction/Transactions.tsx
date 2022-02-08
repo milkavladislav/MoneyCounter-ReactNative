@@ -10,6 +10,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { FlatGrid } from "react-native-super-grid";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { addTransaction } from "../../storeFunctions/transactions";
+import { getAllCategories } from "../../storeFunctions/categries";
 
 export const Transactions = () => {
   const [accounts, setAccounts] = useState<null | IAccount[]>(null);
@@ -28,8 +29,10 @@ export const Transactions = () => {
 
     setAccounts(accounts);
     setAccount(accounts[0]);
-    setCategories(mockCategories);
-    setCategory(mockCategories[0]);
+
+    const categories = await getAllCategories();
+    setCategories(categories);
+    setCategory(categories[0]);
   };
 
   useEffect(() => {
@@ -130,15 +133,14 @@ export const Transactions = () => {
       addTransaction({
         idAccount: account?.id,
         idCategory: category?.id,
-        amount: +transactionAmount,
+        amount: type === TransactionType.Expenses ? (0 - +transactionAmount) : +transactionAmount,
         date: date,
         comment: comment,
         photos: [],
-      }).then(() =>{
+      }).then(() => {
         getData();
-        alert('Transaction add successfully');
-      }
-      );
+        alert("Transaction add successfully");
+      });
   };
 
   return (
@@ -194,30 +196,29 @@ export const Transactions = () => {
             />
           </View>
           <Text style={styles.optionsTitle}>Categories</Text>
-          {
-            categories &&   
+          {categories && (
             <FlatGrid
-            nestedScrollEnabled
-            itemDimension={110}
-            data={categories.filter((category) => category.type === type)}
-            fixed
-            scrollEnabled
-            spacing={10}
-            renderItem={({ item }) => (
-              <Chip
-                icon={item.icon}
-                onPress={() => setCategory(item)}
-                style={
-                  item.id === category?.id
-                    ? styles.activeCategoriesButton
-                    : styles.categoriesButton
-                }
-              >
-                {item.name}
-              </Chip>
-            )}
-          />
-          }
+              nestedScrollEnabled
+              itemDimension={110}
+              data={categories.filter((category) => category.type === type)}
+              fixed
+              scrollEnabled
+              spacing={10}
+              renderItem={({ item }) => (
+                <Chip
+                  icon={item.icon}
+                  onPress={() => setCategory(item)}
+                  style={
+                    item.id === category?.id
+                      ? styles.activeCategoriesButton
+                      : styles.categoriesButton
+                  }
+                >
+                  {item.name}
+                </Chip>
+              )}
+            />
+          )}
           <Text style={styles.optionsTitle}>Date</Text>
           <Button onPress={showMode} children="Show date picker!" />
           {show && (
@@ -281,8 +282,8 @@ const styles = StyleSheet.create({
   },
   categoriesButton: {},
   activeCategoriesButton: {
-    backgroundColor: "#FBD786",
-    borderColor: "#f5af19",
+    backgroundColor: "#4caf50",
+    borderColor: "#4caf50",
     borderWidth: 2,
   },
   addButton: {

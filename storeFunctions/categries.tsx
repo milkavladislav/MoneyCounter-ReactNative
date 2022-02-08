@@ -17,6 +17,7 @@ const addCategory = async (newCategory: ICategory) => {
     }
     newCategory.id = new Date().getTime();
     newCategory.amount = 0;
+    console.log("cat:" + newCategory)
     value.push(newCategory);
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(categoriesKey, jsonValue);

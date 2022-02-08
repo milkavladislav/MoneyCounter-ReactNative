@@ -3,9 +3,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {BottomNavigation, DefaultTheme,  Provider as PaperProvider, Button } from "react-native-paper";
 import { useState } from "react";
 import { Transactions } from "./components/Transaction/Transactions";
+import { History } from "./components/History/History";
 import { addAccount, deleteAllAccounts, getAllAccounts, updateAccount } from "./storeFunctions/accounts";
 import { deleteAllTransactions, getAllTransactions } from "./storeFunctions/transactions";
 import { Category } from "./components/Category/Category";
+import { deleteAllCategories, getAllCategories } from "./storeFunctions/categries";
 
 const theme = {
   ...DefaultTheme,
@@ -24,6 +26,7 @@ export default () => {
     { key: 'statistic', title: 'Statistic', icon: 'chart-histogram', color: '#f64f59'},
     { key: 'category', title: 'Category', icon: 'vector-triangle', color: '#f64f59'},
     { key: 'transactions', title: 'Transactions', icon: 'wallet', color: '#c471ed' },
+    { key: 'history', title: 'History', icon: 'history', color: '#c471ed' },
     { key: 'account', title: 'Account', icon: 'account-outline', color: '#6dd5ed' },
   ]);
 
@@ -73,13 +76,10 @@ export default () => {
       {/* <Button icon="content-save" dark mode="contained" onPress={() => updateAccount({name: 'Caw', amount: 29}, {name: 'Caw', amount: 100})}>
         Update accounts
       </Button> */}
-      <Button icon="content-save" dark mode="contained" onPress={() => addAccount({name: 'Caq', amount: 29})}>
-        Add category
-      </Button>
-      <Button icon="content-save" dark mode="contained" onPress={() => getAllAccounts()}>
+      <Button icon="content-save" dark mode="contained" onPress={() => getAllCategories()}>
         Show all categories
       </Button>
-      <Button icon="content-save" dark mode="contained" onPress={() => deleteAllAccounts()}>
+      <Button icon="content-save" dark mode="contained" onPress={() => deleteAllCategories()}>
         Delete all categories
       </Button>
       {/* <Button icon="content-save" dark mode="contained" onPress={() => updateAccount({name: 'Caw', amount: 29}, {name: 'Caw', amount: 100})}>
@@ -98,6 +98,7 @@ export default () => {
       statistic: MusicRoute,
       category: Category,
       transactions: Transactions,
+      history: History,
       account: RecentsRoute,
     });
 

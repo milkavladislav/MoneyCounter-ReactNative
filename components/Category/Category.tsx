@@ -1,5 +1,14 @@
 import { Platform, StatusBar, StyleSheet, Text, View } from "react-native";
-import { Button, TextInput, Chip, Card, Avatar, IconButton } from "react-native-paper";
+import {
+  Button,
+  TextInput,
+  Chip,
+  Card,
+  Avatar,
+  IconButton,
+  Portal,
+  Dialog,
+} from "react-native-paper";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { ScrollView, SafeAreaView } from "react-native";
@@ -7,17 +16,31 @@ import { getAllAccounts } from "../../storeFunctions/accounts";
 import { IAccount, ICategory, TransactionType } from "../../types";
 import { LinearGradient } from "expo-linear-gradient";
 import { FlatGrid } from "react-native-super-grid";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { addTransaction } from "../../storeFunctions/transactions";
-import { deleteCategory } from "../../storeFunctions/categries";
+import {
+  addCategory,
+  deleteCategory,
+  getAllCategories,
+  updateCategory,
+} from "../../storeFunctions/categries";
+import { AddDialog } from "./AddDialog";
+import { EditDialog } from "./EditDialog";
 
 export const Category = () => {
   const [categories, setCategories] = useState<null | ICategory[]>(null);
-
   const [type, setType] = useState(TransactionType.Income);
 
+  const [addVisible, setAddVisible] = useState(false);
+  const [editVisible, setEditVisible] = useState(false);
+
+  const showAddDialog = () => setAddVisible(true);
+  const closeAddDialog = () => setAddVisible(false);
+
+  const showEditDialog = () => setEditVisible(true);
+  const closeEditDialog = () => setEditVisible(false);
+
   const getData = async () => {
-    setCategories(mockCategories);
+    setCategories(await getAllCategories());
   };
 
   useEffect(() => {
@@ -113,39 +136,77 @@ export const Category = () => {
               icon="minus-circle"
             />
           </View>
-          {
-            categories && categories.filter((category) => category.type === type).map((category) => (
-              <Card key={category.id} elevation={1} style={{padding: 15, marginVertical: 10, marginHorizontal: 5, borderRadius: 10, backgroundColor: '#CFDAFF'}}>
-            <View style={{ flexDirection: "row" }}>
-              <Avatar.Icon icon={category.icon} size={80} />
-              <View style={{ flex: 1 }}>
-                <View
-                  style={{
-                    flex: 1,
-                    marginLeft: 20,
-                    flexDirection: "row",
-                    justifyContent: 'space-between',
-                  }}
+          {categories &&
+            categories
+              .filter((category) => category.type === type)
+              .map((category) => (
+                <Card
+                  key={category.id}
+                  elevation={1}
+                  style={styles.categoryCard}
                 >
-                  <Text style={{fontSize: 20}}>{category.name}</Text>
-                  <Text style={{fontSize: 20, fontWeight: 'bold', marginLeft: 20}}>{category.amount}$</Text>
-                </View>
-                <View
-                  style={{
-                    marginLeft: 20,
-                    flex: 1,
-                    flexDirection: "row",
-                    justifyContent: 'flex-end',
-                  }}
-                >
-                  <IconButton icon={"pencil"} color="black" onPress={() => alert('test edit')}  size={30} style={{backgroundColor: '#fff59d'}} />
-                  <IconButton icon={"delete"} color="black" onPress={() => alert('test delete')}  size={30} style={{backgroundColor: '#ff7043'}}/>
-                </View>
-              </View>
-            </View>
-          </Card>
-            ))
-          }
+                  <View style={{ flexDirection: "row" }}>
+                    <Avatar.Icon icon={category.icon} size={80} />
+                    <View style={{ flex: 1 }}>
+                      <View
+                        style={{
+                          flex: 1,
+                          marginLeft: 20,
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Text style={{ fontSize: 20 }}>{category.name}</Text>
+                        <Text
+                          style={styles.amount}
+                        >
+                          {category.amount}$
+                        </Text>
+                      </View>
+                      <View
+                        style={styles.cardButtons}
+                      >
+                        <IconButton
+                          icon={"pencil"}
+                          color="black"
+                          onPress={showEditDialog}
+                          size={30}
+                          style={{ backgroundColor: "#fff59d" }}
+                        />
+                        <IconButton
+                          icon={"delete"}
+                          color="black"
+                          onPress={async () => {
+                            category.id && (await deleteCategory(category.id));
+                            await getData();
+                            alert("Category deleted");
+                          }}
+                          size={30}
+                          style={{ backgroundColor: "#ff7043" }}
+                        />
+                      </View>
+                      <EditDialog
+                          oldCategory={category}
+                          visible={editVisible}
+                          closeDialog={closeEditDialog}
+                          editCategory={async (
+                            newCategoryName,
+                            newCategoryIcon
+                          ) => {
+                            category.id &&
+                              (await updateCategory(
+                                category.id,
+                                newCategoryName,
+                                newCategoryIcon
+                              ));
+                            getData();
+                            alert("Category updated");
+                          }}
+                        />
+                    </View>
+                  </View>
+                </Card>
+              ))}
           <View style={{ marginTop: 25, alignItems: "center" }}>
             <Button
               children="New category"
@@ -153,8 +214,17 @@ export const Category = () => {
               labelStyle={styles.addButtonLabel}
               color="green"
               mode={"contained"}
-              onPress={() => alert('Test mode')}
+              onPress={showAddDialog}
               icon="plus-circle-outline"
+            />
+            <AddDialog
+              visible={addVisible}
+              closeDialog={closeAddDialog}
+              addCategory={async (category: ICategory) => {
+                await addCategory(category);
+                getData();
+                alert("Category added");
+              }}
             />
           </View>
         </ScrollView>
@@ -207,4 +277,22 @@ const styles = StyleSheet.create({
   scrollView: {
     paddingHorizontal: 15,
   },
+  categoryCard: {
+    padding: 15,
+    marginVertical: 10,
+    marginHorizontal: 5,
+    borderRadius: 10,
+    backgroundColor: "#CFDAFF",
+  },
+  cardButtons: {
+    marginLeft: 20,
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+  amount: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginLeft: 20,
+  }
 });

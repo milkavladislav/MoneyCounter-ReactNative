@@ -33,6 +33,17 @@ const getAllTransactions = async (): Promise<ITransaction[]> => {
   return [];
 };
 
+const deleteTransaction = async (transactionId: number) => {
+  try {
+    const value = await getAllTransactions();
+    const transactions = value.filter((transaction: ITransaction) => transaction.id !== transactionId);
+    const jsonValue = JSON.stringify(transactions);
+    await AsyncStorage.setItem(transactionsKey, jsonValue);
+  } catch (e) {
+    alert(e);
+  }
+};
+
 const deleteAllTransactions = async () => {
   try {
     await AsyncStorage.removeItem(transactionsKey);
@@ -77,12 +88,13 @@ const updateAccountCategoryAmount = async (
   differenceAmount: number
 ) => {
   await updateAccountAmount(idAccount, differenceAmount);
-  //await updateCategoryAmount(idCategory, differenceAmount);
+  await updateCategoryAmount(idCategory, differenceAmount);
 };
 
 export {
   addTransaction,
   getAllTransactions,
+  deleteTransaction,
   deleteAllTransactions,
   updateTransaction,
 };
