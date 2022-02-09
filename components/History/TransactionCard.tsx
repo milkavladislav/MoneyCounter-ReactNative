@@ -1,21 +1,13 @@
 import { Platform, StatusBar, StyleSheet, Text, View } from "react-native";
-import {
+import { Card, Avatar, IconButton } from "react-native-paper";
+import React, { useState } from "react";
 
-  Card,
-  Avatar,
-  IconButton,
-
-} from "react-native-paper";
-import React from "react";
-
-import {
-  IAccount,
-  ICategory,
-  ITransaction,
-} from "../../types";
+import { IAccount, ICategory, ITransaction } from "../../types";
 import {
   deleteTransaction,
+  updateTransaction,
 } from "../../storeFunctions/transactions";
+import { EditTransactionDialog } from "./EditTransactionDialog";
 
 interface ITransactionCard {
   transaction: ITransaction;
@@ -28,8 +20,9 @@ export const TransactionCard = ({
   transaction,
   category,
   account,
-  updateData
+  updateData,
 }: ITransactionCard) => {
+  const [visible, setVisible] = useState(false);
 
   return (
     <Card key={transaction.id} elevation={1} style={styles.card}>
@@ -65,20 +58,18 @@ export const TransactionCard = ({
         }}
       >
         <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-        {new Date(transaction.date).toDateString()}
+          {new Date(transaction.date).toDateString()}
         </Text>
         <Text style={{ fontSize: 16, fontWeight: "bold" }}>
           {account?.name}
         </Text>
       </View>
-        <Text style={styles.optionsTitle}>{transaction.comment}</Text>
+      <Text style={styles.optionsTitle}>{transaction.comment}</Text>
       <Card.Actions style={{ marginBottom: -15, justifyContent: "flex-end" }}>
         <IconButton
           icon={"pencil"}
           color="black"
-          onPress={
-            () => (console.log("test edit"))
-          }
+          onPress={() => setVisible(true)}
           size={20}
           style={{ backgroundColor: "#fff59d" }}
         />
@@ -92,6 +83,26 @@ export const TransactionCard = ({
           }}
           size={20}
           style={{ backgroundColor: "#ff7043" }}
+        />
+        <EditTransactionDialog
+          closeDialog={() => setVisible(false)}
+          oldTransaction={transaction}
+          visible={visible}
+          editTransaction={(
+            newTransactionComment,
+            newTransactionAmount,
+            newTransactionDate
+          ) => {
+            transaction.id &&
+              (updateTransaction(
+                transaction.id,
+                newTransactionComment,
+                newTransactionAmount,
+                newTransactionDate
+              ));
+              updateData();
+              alert("Category updated");
+          }}
         />
       </Card.Actions>
     </Card>

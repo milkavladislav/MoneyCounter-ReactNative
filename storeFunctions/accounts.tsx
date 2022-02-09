@@ -3,14 +3,13 @@ import { IAccount } from "../types";
 
 const accountsKey = "@accounts";
 
-const addAccount = async (newAccount: IAccount) => {
+const addAccount = async (accountName: string) => {
   try {
     const value = await getAllAccounts();
-    if(value.filter((account: IAccount) => account.name === newAccount.name).length !== 0) {
+    if(value.filter((account: IAccount) => account.name === accountName).length !== 0) {
         throw new Error("Account already exist");
     }
-    newAccount.id = new Date().getTime();
-    value.push(newAccount)
+    value.push({name: accountName, id: new Date().getTime(), amount: 0})
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(accountsKey, jsonValue);
   } catch (e) {
@@ -27,6 +26,17 @@ const getAllAccounts = async (): Promise<IAccount[]> => {
     alert(e);
   }
   return [];
+};
+
+const deleteAccount = async (accountId: number) => {
+  try {
+    const value = await getAllAccounts();
+    const transactions = value.filter((account: IAccount) => account.id !== accountId);
+    const jsonValue = JSON.stringify(transactions);
+    await AsyncStorage.setItem(accountsKey, jsonValue);
+  } catch (e) {
+    alert(e);
+  }
 };
 
 const deleteAllAccounts = async () => {
@@ -67,4 +77,4 @@ const updateAccountAmount = async (accountId: number, transactionAmount: number)
   }
 };
 
-export { addAccount, getAllAccounts, deleteAllAccounts, updateAccount, updateAccountAmount };
+export { addAccount, getAllAccounts, deleteAccount, deleteAllAccounts, updateAccount, updateAccountAmount };

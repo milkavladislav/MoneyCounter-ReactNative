@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ITransaction } from "../types";
 import { updateAccountAmount } from "./accounts";
-import { updateCategoryAmount } from "./categries";
+import { updateCategoryAmount } from "./categories";
 
 const transactionsKey = "@transactions";
 
@@ -54,24 +54,25 @@ const deleteAllTransactions = async () => {
 
 const updateTransaction = async (
   oldTransactionId: number,
-  newTransaction: ITransaction
+  newTransactionComment: string,
+  newTransactionAmount: number,
+  newTransactionDate: Date
 ) => {
   try {
     const transactions = await getAllTransactions();
     transactions.map(
-      async (transaction: ITransaction) => {
+      (transaction: ITransaction) => {
         if (transaction.id === oldTransactionId) {
-          if (transaction.amount !== newTransaction.amount) {
-            await updateAccountCategoryAmount(
+          if (transaction.amount !== newTransactionAmount) {
+            updateAccountCategoryAmount(
               transaction.idAccount,
               transaction.idCategory,
-              newTransaction.amount - transaction.amount
+              newTransactionAmount - transaction.amount
             );
-            transaction.amount = newTransaction.amount;
-          }
-          transaction.comment = newTransaction.comment;
-          transaction.date = newTransaction.date;
-          transaction.photos = newTransaction.photos;
+          } 
+          transaction.amount = newTransactionAmount;
+          transaction.comment = newTransactionComment;
+          transaction.date = newTransactionDate;
         }
       }
     );

@@ -1,4 +1,4 @@
-import { Platform, StatusBar, StyleSheet, Text, View } from "react-native";
+import {  StyleSheet, Text } from "react-native";
 import {
   Button,
   TextInput,
@@ -6,11 +6,9 @@ import {
   Portal,
   Dialog,
 } from "react-native-paper";
-import React, { useState } from "react";
+import { useState } from "react";
 import { AvailableIcons, IAccount, ICategory, TransactionType } from "../../types";
 import { FlatGrid } from "react-native-super-grid";
-import { addTransaction } from "../../storeFunctions/transactions";
-import { deleteCategory } from "../../storeFunctions/categries";
 
 
 interface IEditDialog {

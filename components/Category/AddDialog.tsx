@@ -18,7 +18,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { FlatGrid } from "react-native-super-grid";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { addTransaction } from "../../storeFunctions/transactions";
-import { deleteCategory } from "../../storeFunctions/categries";
+import { deleteCategory } from "../../storeFunctions/categories";
 
 
 interface IAddDialog {

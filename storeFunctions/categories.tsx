@@ -17,7 +17,6 @@ const addCategory = async (newCategory: ICategory) => {
     }
     newCategory.id = new Date().getTime();
     newCategory.amount = 0;
-    console.log("cat:" + newCategory)
     value.push(newCategory);
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(categoriesKey, jsonValue);
@@ -29,7 +28,6 @@ const addCategory = async (newCategory: ICategory) => {
 const getAllCategories = async (): Promise<ICategory[]> => {
   try {
     const jsonValue = await AsyncStorage.getItem(categoriesKey);
-    console.log(jsonValue);
     return jsonValue != null ? JSON.parse(jsonValue) : [];
   } catch (e) {
     alert(e);

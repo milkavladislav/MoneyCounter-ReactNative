@@ -19,12 +19,16 @@ export interface ITransaction {
     idAccount: number,
     date: Date,
     comment: string,
-    photos: string[]
 }
 
 export enum TransactionType {
-    Expenses = "expenses",
-    Income = "income",
+    Expenses = "Expenses",
+    Income = "Income",
+}
+
+export enum DialogMode { 
+    Edit = "Edit",
+    Add = "Add"
 }
 
 export const AvailableIcons: {iconName: string}[] = [
@@ -42,4 +46,25 @@ export const AvailableIcons: {iconName: string}[] = [
     {iconName: "briefcase"},
     {iconName: "bus"},
     {iconName: "cards"},
+    {iconName: "volleyball"},
+    {iconName: "gift"},
+    {iconName: "teach"},
+    {iconName: "laptop"},
+    {iconName: "bank-plus"},
+    {iconName: "bank-minus"},
+    {iconName: "food"},
+    {iconName: "home"},
+];
+
+export const ChartColors = [
+    "#8bc34a",
+    "#2196f3",
+    "#3f51b5",
+    "#673ab7",
+    "#9c27b0",
+    "#e91e63",
+    "#e91e63",   
+    "#ff9800",
+    "#ffc107",
+    "#ffeb3b",
 ]

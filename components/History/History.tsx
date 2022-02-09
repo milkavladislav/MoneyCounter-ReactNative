@@ -1,6 +1,6 @@
 import { Platform, StatusBar, StyleSheet, Text, View } from "react-native";
-import { Button, Chip, List } from "react-native-paper";
-import React, { useState } from "react";
+import { Button, Chip } from "react-native-paper";
+import { useState } from "react";
 import { useEffect } from "react";
 import { ScrollView, SafeAreaView } from "react-native";
 import { AccountPopup } from "../Transaction/AccountPopup";
@@ -14,9 +14,10 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { FlatGrid } from "react-native-super-grid";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { getAllCategories } from "../../storeFunctions/categries";
+import { getAllCategories } from "../../storeFunctions/categories";
 import { getAllTransactions } from "../../storeFunctions/transactions";
 import { TransactionCard } from "./TransactionCard";
+import { Reload } from "../ReloadButton";
 
 export const History = () => {
   const [accounts, setAccounts] = useState<null | IAccount[]>(null);
@@ -29,7 +30,7 @@ export const History = () => {
     TransactionType.Expenses
   );
 
-  const [expanded, setExpanded] = React.useState(true);
+  const [expanded, setExpanded] = useState(true);
 
   const hideFilter = () => setExpanded(false);
   const showFilter = () => setExpanded(true);
@@ -87,7 +88,7 @@ export const History = () => {
   };
 
   return (
-    <LinearGradient colors={["#f7ff00", "#db36a4"]} style={styles.container}>
+    <><LinearGradient colors={["#f7ff00", "#db36a4"]} style={styles.container}>
       <SafeAreaView style={{ flex: 1, paddingTop: StatusBar.currentHeight }}>
         <ScrollView style={styles.scrollView} nestedScrollEnabled scrollEnabled>
           <Text style={styles.header}>Transactions history</Text>
@@ -97,7 +98,7 @@ export const History = () => {
                 backgroundColor: "rgba(0,0,0,0.2)",
                 margin: 5,
                 borderRadius: 10,
-                padding: 10,
+                padding: 10
               }}
             >
               <Text style={styles.optionsTitle}>Account</Text>
@@ -106,8 +107,7 @@ export const History = () => {
                   changeAccount={changeAccount(setAccount)}
                   accounts={accounts}
                   currentAccount={account}
-                  buttonStyle="small"
-                />
+                  buttonStyle="small" />
               )}
               <Text style={styles.optionsTitle}>Type</Text>
               <View style={styles.buttonsContainer}>
@@ -117,32 +117,27 @@ export const History = () => {
                   style={styles.typeButton}
                   color="yellow"
                   mode={type === "All" ? "contained" : "text"}
-                  onPress={() => setType("All")}
-                />
+                  onPress={() => setType("All")} />
                 <Button
                   children={TransactionType.Income}
                   style={styles.typeButton}
                   labelStyle={{ fontSize: 10 }}
                   color="green"
                   mode={type === TransactionType.Income ? "contained" : "text"}
-                  onPress={() => setType(TransactionType.Income)}
-                />
+                  onPress={() => setType(TransactionType.Income)} />
                 <Button
                   children={TransactionType.Expenses}
                   style={styles.typeButton}
                   labelStyle={{ fontSize: 10 }}
                   color="red"
-                  mode={
-                    type === TransactionType.Expenses ? "contained" : "text"
-                  }
-                  onPress={() => setType(TransactionType.Expenses)}
-                />
+                  mode={type === TransactionType.Expenses ? "contained" : "text"}
+                  onPress={() => setType(TransactionType.Expenses)} />
               </View>
               <Text style={styles.optionsTitle}>Categories</Text>
               {categories && (
                 <FlatGrid
                   nestedScrollEnabled
-                  itemDimension={110}
+                  itemDimension={100}
                   data={categories.filter(
                     (category) => type === "All" || category.type === type
                   )}
@@ -153,30 +148,25 @@ export const History = () => {
                     <Chip
                       icon={item.icon}
                       onPress={() => setCategory(item)}
-                      style={
-                        item.id === category?.id &&
-                        styles.activeCategoriesButton
-                      }
+                      style={item.id === category?.id &&
+                        styles.activeCategoriesButton}
                     >
                       {item.name}
                     </Chip>
-                  )}
-                />
+                  )} />
               )}
               <View style={styles.buttonsContainer}>
                 <View>
                   <Text style={styles.dateOptionsTitle}>Start date</Text>
                   <Button
                     onPress={showModeStartDate}
-                    children={startDate.toDateString()}
-                  />
+                    children={startDate.toDateString()} />
                 </View>
                 <View>
                   <Text style={styles.dateOptionsTitle}>End date</Text>
                   <Button
                     onPress={showModeEndDate}
-                    children={endDate.toDateString()}
-                  />
+                    children={endDate.toDateString()} />
                 </View>
               </View>
               {showStartDate && (
@@ -187,8 +177,7 @@ export const History = () => {
                   mode={"date"}
                   is24Hour={true}
                   display="default"
-                  onChange={onChangeStartDate}
-                />
+                  onChange={onChangeStartDate} />
               )}
               {showEndDate && (
                 <DateTimePicker
@@ -198,8 +187,7 @@ export const History = () => {
                   minimumDate={startDate}
                   is24Hour={true}
                   display="default"
-                  onChange={onChangeEndDate}
-                />
+                  onChange={onChangeEndDate} />
               )}
               <Button onPress={hideFilter} icon="arrow-up-drop-circle">
                 Hide filter
@@ -213,11 +201,10 @@ export const History = () => {
           {transactions &&
             transactions
               .filter(
-                (transaction) =>
-                  new Date(transaction.date).getTime() <=
-                    new Date(endDate).getTime() &&
+                (transaction) => new Date(transaction.date).getTime() <=
+                  new Date(endDate).getTime() &&
                   new Date(transaction.date).getTime() >=
-                    new Date(startDate).getTime() &&
+                  new Date(startDate).getTime() &&
                   transaction.idCategory === category?.id &&
                   transaction.idAccount === account?.id
               )
@@ -231,12 +218,12 @@ export const History = () => {
                   )}
                   account={accounts?.find(
                     (account) => account.id === transaction.idAccount
-                  )}
-                />
+                  )} />
               ))}
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>
+    <Reload getData={getData} /></>
   );
 };
 
