@@ -20,7 +20,6 @@ const addAccount = async (accountName: string) => {
 const getAllAccounts = async (): Promise<IAccount[]> => {
   try {
     const jsonValue = await AsyncStorage.getItem(accountsKey);
-    console.log(jsonValue)
     return jsonValue != null ? JSON.parse(jsonValue) : [] ;
   } catch (e) {
     alert(e);

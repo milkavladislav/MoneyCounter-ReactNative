@@ -14,7 +14,6 @@ const addTransaction = async (newTransaction: ITransaction) => {
       newTransaction.idCategory,
       newTransaction.amount
     );
-    console.log(transactions)
     transactions.push(newTransaction);
     const jsonValue = JSON.stringify(transactions);
     await AsyncStorage.setItem(transactionsKey, jsonValue);

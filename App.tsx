@@ -1,4 +1,3 @@
-import { StyleSheet } from "react-native";
 import {BottomNavigation, DefaultTheme,  Provider as PaperProvider} from "react-native-paper";
 import { useState } from "react";
 import { Transactions } from "./components/Transaction/Transactions";

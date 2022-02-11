@@ -16,11 +16,12 @@ import { Reload } from "../ReloadButton";
 
 export const Account = () => {
   const [accounts, setAccounts] = useState<IAccount[]>();
-  const [type, setType] = useState(TransactionType.Income);
+  const [currentAccount, setCurrentAccount] = useState<IAccount>();
 
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState<DialogMode>(DialogMode.Add);
-  const showDialog = (mode: DialogMode) => () => {
+  const showDialog = (mode: DialogMode, account?: IAccount) => () => {
+    account && setCurrentAccount(account);
     setMode(mode);
     setVisible(true);
   };
@@ -89,7 +90,7 @@ export const Account = () => {
                       <IconButton
                         icon={"pencil"}
                         color="black"
-                        onPress={showDialog(DialogMode.Edit)}
+                        onPress={showDialog(DialogMode.Edit, account)}
                         size={20}
                         style={{ backgroundColor: "#fff59d" }}
                       />
@@ -122,6 +123,7 @@ export const Account = () => {
                 visible={visible}
                 closeDialog={closeDialog}
                 func={dialogFunction()}
+                oldAccount={mode === DialogMode.Edit ? currentAccount : undefined}
               />
             </View>
           </ScrollView>

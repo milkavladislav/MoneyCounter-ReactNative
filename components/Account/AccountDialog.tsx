@@ -6,21 +6,22 @@ import {
   Dialog as D,
 } from "react-native-paper";
 import { useState } from "react";
+import { IAccount } from "../../types";
 
 interface IDialog {
     closeDialog: () => void;
     visible: boolean;
     func: (name: string, oldAccountId?: number) => Promise<void>;
-    oldName?: string;
+    oldAccount?: IAccount
   }
 
-export const AccountDialog = ({closeDialog, visible, func, oldName} :IDialog) => {
-  const [name, setName] = useState(oldName || "");
+export const AccountDialog = ({closeDialog, visible, func, oldAccount} :IDialog) => {
+  const [name, setName] = useState(oldAccount?.name || "");
 
   return (
     <Portal>
       <D visible={visible} onDismiss={closeDialog}>
-        <D.Title children={oldName ? "New account" : "Edit account"}/>
+        <D.Title children={oldAccount ? "New account" : "Edit account"}/>
         <D.Content>
           <Text style={styles.optionsTitle}>Name</Text>
           <TextInput
@@ -34,7 +35,7 @@ export const AccountDialog = ({closeDialog, visible, func, oldName} :IDialog) =>
         <D.Actions>
           <Button
             onPress={() => {
-              func(name)
+              func(name, oldAccount && oldAccount.id)
               closeDialog();
             }}
           >
